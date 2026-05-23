@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>臨床検査部門システム（LIS）クラウド化 — 案件受注のための資格要件</title>
+<meta name="description" content="LIS（検査・細菌・病理）クラウド化案件を受注する事業者が備えるべき資格要件を、組織認証・人材・事業形態の許可・入札資格・AWSパートナー認定の5レイヤー × 必須度で整理。">
+<style>
+:root{
+  --primary:#0e4d92; --primary-light:#2563eb; --accent:#06b6d4;
+  --gate:#dc2626; --gate-bg:#fef2f2; --gate-bd:#fecaca;
+  --defacto:#d97706; --defacto-bg:#fffbeb; --defacto-bd:#fde68a;
+  --plus:#059669; --plus-bg:#ecfdf5; --plus-bd:#a7f3d0;
+  --bg:#f8fafc; --bg-card:#fff; --text:#1f2937; --text-soft:#6b7280; --border:#e5e7eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Hiragino Sans","Yu Gothic","Meiryo",-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:var(--primary-light)}
+
+header{background:linear-gradient(135deg,#0e4d92 0%,#1e3a8a 50%,#06b6d4 100%);color:#fff;padding:46px 0 38px}
+header h1{font-size:25px;font-weight:700;margin-bottom:12px}
+header p.sub{font-size:15px;opacity:.92;max-width:830px}
+header .sibling{margin-top:16px;font-size:13px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:10px 14px;display:inline-block}
+header .sibling a{color:#fff;text-decoration:underline}
+header .meta{margin-top:14px;font-size:12.5px;opacity:.8}
+
+.intro{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 26px;margin:28px 0}
+.intro h2{font-size:17px;color:var(--primary);margin-bottom:10px}
+.intro p{margin-bottom:8px}
+.intro .deg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+.intro .deg .d{border-radius:10px;padding:13px 15px;font-size:13px}
+.intro .deg .d.g{background:var(--gate-bg);border:1px solid var(--gate-bd)}
+.intro .deg .d.f{background:var(--defacto-bg);border:1px solid var(--defacto-bd)}
+.intro .deg .d.p{background:var(--plus-bg);border:1px solid var(--plus-bd)}
+.intro .deg .d b{display:block;margin-bottom:4px}
+.intro .deg .d.g b{color:var(--gate)} .intro .deg .d.f b{color:var(--defacto)} .intro .deg .d.p b{color:var(--plus)}
+.intro p.note{font-size:13px;color:var(--text-soft);margin-top:12px}
+
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap}
+.badge.gate{background:var(--gate-bg);color:var(--gate);border:1px solid var(--gate-bd)}
+.badge.defacto{background:var(--defacto-bg);color:var(--defacto);border:1px solid var(--defacto-bd)}
+.badge.plus{background:var(--plus-bg);color:var(--plus);border:1px solid var(--plus-bd)}
+.badge.layer{background:#eff6ff;color:var(--primary-light);border:1px solid #bfdbfe}
+.badge.cond{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe}
+
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin:28px 0 4px;flex-wrap:wrap}
+.tab{background:none;border:none;padding:11px 15px;font-size:14px;font-weight:600;color:var(--text-soft);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:inherit}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.panel{display:none;padding-top:22px}
+.panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+h3.sec{font-size:15px;color:var(--primary);margin:8px 0 14px;padding-left:11px;border-left:4px solid var(--accent)}
+
+.matrix{width:100%;border-collapse:collapse;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:13px;margin-bottom:8px}
+.matrix th,.matrix td{padding:11px 13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border)}
+.matrix thead th{background:var(--primary);color:#fff;font-weight:600;font-size:12.5px}
+.matrix tbody tr:nth-child(even){background:#fafbfc}
+.matrix td.q{font-weight:600;color:var(--primary)}
+
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.card>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.card>summary::-webkit-details-marker{display:none}
+.card>summary:hover{background:#fafbfc}
+.card .tw{display:flex;flex-direction:column;gap:6px}
+.card .tr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.card h4{font-size:15.5px;color:var(--primary);font-weight:700}
+.card .meta{font-size:12.5px;color:var(--text-soft)}
+.card .chev{color:var(--text-soft);font-size:13px;flex-shrink:0;margin-top:4px;transition:transform .2s}
+.card[open] .chev{transform:rotate(180deg)}
+.card .body{padding:4px 20px 20px;border-top:1px solid var(--border)}
+.card .body .row{margin-top:12px}
+.card .body .row .h{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-soft);margin-bottom:5px}
+.card .body .row p{font-size:13.5px}
+.card .body .row a{font-size:12.5px;word-break:break-all}
+
+.note-box{background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid var(--primary-light);border-radius:8px;padding:13px 17px;margin:14px 0;font-size:13.5px}
+.note-box strong{color:var(--primary)}
+.note-box.warn{background:var(--defacto-bg);border-color:var(--defacto-bd);border-left-color:var(--defacto)}
+.note-box.warn strong{color:var(--defacto)}
+
+/* 機能トリガーフロー */
+.flow{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.flow .step{border-radius:10px;padding:14px 16px;border:1px solid}
+.flow .step.a{background:var(--plus-bg);border-color:var(--plus-bd)}
+.flow .step.b{background:var(--defacto-bg);border-color:var(--defacto-bd)}
+.flow .step.c{background:#f5f3ff;border-color:#ddd6fe}
+.flow .step .t{font-weight:700;margin-bottom:5px;font-size:14px}
+.flow .step.a .t{color:var(--plus)} .flow .step.b .t{color:var(--defacto)} .flow .step.c .t{color:#7c3aed}
+.flow .step .arw{font-size:13px;color:var(--text-soft);margin-top:6px}
+
+/* 個人→組織 積み上げ */
+.stack{display:flex;flex-direction:column;gap:0;margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.stack .lvl{padding:13px 18px;color:#fff;font-size:13.5px}
+.stack .lvl b{font-weight:700}
+.stack .lvl:nth-child(1){background:#56b2e8}
+.stack .lvl:nth-child(2){background:#3f9ae0}
+.stack .lvl:nth-child(3){background:#1e6bc7}
+.stack .lvl:nth-child(4){background:#0e4d92}
+.stack .updown{text-align:center;font-size:12px;color:var(--text-soft);padding:4px}
+
+/* roadmap */
+.road{counter-reset:r;margin:14px 0}
+.road .s{position:relative;padding:13px 16px 13px 52px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:9px;font-size:13.5px}
+.road .s::before{counter-increment:r;content:counter(r);position:absolute;left:14px;top:12px;width:26px;height:26px;line-height:26px;text-align:center;background:var(--primary);color:#fff;border-radius:50%;font-weight:700;font-size:13px}
+.road .s b{color:var(--primary)}
+
+.cmp{width:100%;border-collapse:collapse;font-size:13px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:8px 0}
+.cmp th,.cmp td{padding:11px 13px;border-bottom:1px solid var(--border);vertical-align:top;text-align:left}
+.cmp thead th{background:var(--primary);color:#fff;font-size:12.5px}
+.cmp td:first-child{font-weight:600;color:var(--primary);white-space:nowrap}
+.cmp tbody tr:nth-child(even){background:#fafbfc}
+
+.minicore{background:var(--plus-bg);border:1px solid var(--plus-bd);border-radius:10px;padding:15px 18px;margin:14px 0}
+.minicore .h{font-weight:700;color:var(--plus);margin-bottom:8px}
+.minicore ul{list-style:none}
+.minicore li{padding-left:18px;position:relative;margin-bottom:6px;font-size:13.5px}
+.minicore li::before{content:"";position:absolute;left:4px;top:9px;width:8px;height:2px;background:var(--plus)}
+
+footer{margin:46px 0 60px}
+.sources{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px 26px}
+.sources h2{font-size:15px;color:var(--primary);margin-bottom:12px}
+.sources h3{font-size:12.5px;color:var(--text-soft);margin:13px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.sources ul{list-style:none;padding:0}
+.sources li{margin-bottom:6px;font-size:12.5px}
+.sources a{word-break:break-all}
+.disclaimer{margin-top:16px;font-size:12px;color:var(--text-soft);line-height:1.6}
+
+/* tooltip */
+.has-tip{cursor:pointer}
+.rmap-phase li.has-tip::after{content:"?";display:inline-block;margin-left:5px;width:12px;height:12px;line-height:12px;text-align:center;font-size:8.5px;font-family:sans-serif;background:var(--primary-light);color:#fff;border-radius:50%;vertical-align:middle}
+.rmap-phase li.has-tip:hover{color:var(--primary)}
+.rmap-base.has-tip,.rmap-goal.has-tip{cursor:pointer}
+#tip{position:absolute;z-index:200;max-width:330px;background:#1f2937;color:#e5e7eb;font-size:12.5px;line-height:1.65;padding:12px 15px;border-radius:9px;box-shadow:0 10px 30px rgba(0,0,0,.28);display:none}
+#tip.show{display:block;animation:fade .15s ease}
+#tip .tip-title{display:block;font-weight:700;color:#7dd3fc;font-size:11.5px;margin-bottom:6px}
+#tip::after{content:"";position:absolute;top:-6px;left:22px;border:6px solid transparent;border-bottom-color:#1f2937;border-top:none}
+#tip.below::after{top:auto;bottom:-6px;border-bottom:none;border-top:6px solid #1f2937}
+.road-details{margin-top:8px}
+.road-details>summary{cursor:pointer;font-size:13px;color:var(--primary-light);font-weight:600;padding:7px 0;list-style:none}
+.road-details>summary::-webkit-details-marker{display:none}
+.road-details>summary::before{content:"▸ ";color:var(--text-soft)}
+.road-details[open]>summary::before{content:"▾ "}
+
+/* roadmap 図解 */
+.rmap{margin:16px 0}
+.rmap-base{background:linear-gradient(135deg,#0e4d92,#2563eb);color:#fff;border-radius:10px;padding:14px 18px;margin-bottom:8px;font-size:13.5px}
+.rmap-base .lbl{display:inline-block;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:2px 9px;border-radius:5px;margin-bottom:6px}
+.rmap-base b{color:#fff}
+.rmap-base .hint{display:block;font-size:11.5px;opacity:.85;margin-top:6px}
+.rmap-up{text-align:center;color:var(--text-soft);font-size:18px;line-height:1;margin:2px 0 8px}
+.rmap-flow{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap}
+.rmap-phase{flex:1;min-width:172px;border-radius:10px;padding:13px 15px;border:1px solid var(--border);background:var(--bg-card)}
+.rmap-phase .ph{font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:.04em}
+.rmap-phase .pt{font-size:14.5px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.rmap-phase ul{list-style:none}
+.rmap-phase li{padding-left:14px;position:relative;margin-bottom:5px;font-size:12.5px;line-height:1.5}
+.rmap-phase li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:2px;background:var(--accent)}
+.rmap-phase .deg{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:5px;margin-top:8px}
+.rmap-phase .deg.gate{background:var(--gate-bg);color:var(--gate);border:1px solid var(--gate-bd)}
+.rmap-phase .deg.defacto{background:var(--defacto-bg);color:var(--defacto);border:1px solid var(--defacto-bd)}
+.rmap-phase .deg.plus{background:var(--plus-bg);color:var(--plus);border:1px solid var(--plus-bd)}
+.rmap-arrow{display:flex;align-items:center;color:var(--primary-light);font-size:20px;font-weight:700}
+.rmap-goal{flex:0 0 auto;min-width:118px;border-radius:10px;padding:13px 15px;background:linear-gradient(135deg,#059669,#06b6d4);color:#fff;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.rmap-goal b{font-size:16px}
+.rmap-goal span{font-size:11.5px;opacity:.92;margin-top:4px;line-height:1.4}
+@media(max-width:760px){.rmap-flow{flex-direction:column}.rmap-arrow{justify-content:center;font-size:16px;transform:rotate(90deg)}}
+
+@media(max-width:760px){
+  header h1{font-size:20px}
+  .intro .deg{grid-template-columns:1fr}
+  .matrix,.cmp{font-size:11.5px}
+  .matrix th,.matrix td,.cmp th,.cmp td{padding:8px 7px}
+  .card>summary{padding:14px}
+  .card .body{padding:4px 14px 16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>臨床検査部門システム（LIS）クラウド化<br>案件受注のための資格要件</h1>
+    <p class="sub">法規制対応ガイド（何を満たすか）の姉妹版。本ガイドは「受注する事業者に何が要るか」を、組織の認証・人材の資格・事業形態の許可・入札資格・AWS パートナー認定の 5 レイヤーで、必須度別に整理する。</p>
+    <div class="sibling">関連：法規制対応と技術要件ガイド → <a href="https://kioh-daiv.github.io/lis-cloud-compliance-guide/">lis-cloud-compliance-guide</a></div>
+    <div class="meta">最終更新：2026年5月 ／ 公的・公式情報に基づく一般整理</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="intro">
+    <h2>3 つの必須度で読む</h2>
+    <p>資格要件は「持っていないと受注できないもの」から「あると勝てるもの」まで濃淡がある。本ガイドは全項目を次の 3 段階で色分けする。</p>
+    <div class="deg">
+      <div class="d g"><b>必須ゲート</b>これがないと入札に参加できない、または事業形態上の許可を欠けば違法になる。</div>
+      <div class="d f"><b>実質必須</b>法的な絶対要件ではないが、選定の前提。ないと候補に残らない・選ばれにくい。</div>
+      <div class="d p"><b>加点・差別化</b>あると競争で勝てる。総合評価・プロポーザルでの加点、医療業界での信頼・専門性の証明。</div>
+    </div>
+    <p class="note">2026 年 5 月時点の公的・公式情報に基づく一般整理。制度・版番は改定される。実際の取得計画・入札参加にあたっては、各公式と当該調達仕様書で最新を確認すること。</p>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-panel="overview">全体像とロードマップ</button>
+    <button class="tab" data-panel="org">組織の認証</button>
+    <button class="tab" data-panel="people">人の資格</button>
+    <button class="tab" data-panel="biz">事業形態の許可</button>
+    <button class="tab" data-panel="bid">入札・調達資格</button>
+    <button class="tab" data-panel="partner">AWSパートナー認定</button>
+  </div>
+
+  <!-- ===== 全体像 ===== -->
+  <section class="panel active" id="overview">
+    <h3 class="sec">必須度マトリクス</h3>
+    <div style="overflow-x:auto">
+    <table class="matrix">
+      <thead><tr><th style="width:34%">資格・要件</th><th style="width:14%">レイヤー</th><th style="width:18%">必須度</th><th style="width:34%">いつ効くか</th></tr></thead>
+      <tbody>
+        <tr><td class="q">全省庁統一資格（物販＋役務）</td><td>入札</td><td><span class="badge gate">必須ゲート</span></td><td>国・独法（国立病院機構）の入札参加</td></tr>
+        <tr><td class="q">自治体 入札参加資格者名簿</td><td>入札</td><td><span class="badge gate">必須ゲート</span></td><td>自治体立病院の入札参加</td></tr>
+        <tr><td class="q">ISMAP 登録</td><td>入札/認証</td><td><span class="badge gate">必須ゲート</span></td><td>クラウドで国・独法を狙う時（原則必須）</td></tr>
+        <tr><td class="q">医療機器製造販売業許可＋QMS＋製品承認</td><td>事業形態</td><td><span class="badge cond">条件付き必須</span></td><td>診断支援(SaMD)機能を載せる場合のみ</td></tr>
+        <tr><td class="q">衛生検査所登録</td><td>事業形態</td><td><span class="badge cond">条件付き必須</span></td><td>自社で検体検査を受託する場合のみ</td></tr>
+        <tr><td class="q">ISMS（JIS Q 27001:2023）＋ ISO 27017</td><td>組織認証</td><td><span class="badge defacto">実質必須</span></td><td>クラウド提供の選定前提</td></tr>
+        <tr><td class="q">プライバシーマーク（JIS Q 15001:2023）</td><td>組織認証</td><td><span class="badge defacto">実質必須</span></td><td>個人情報取扱事業者の信頼担保</td></tr>
+        <tr><td class="q">医療情報技師</td><td>人</td><td><span class="badge defacto">実質必須</span></td><td>調達仕様書に「望ましい資格」と明記</td></tr>
+        <tr><td class="q">3省2GL（事業者向け第2.0版）準拠表明</td><td>体制</td><td><span class="badge defacto">実質必須</span></td><td>医療情報システム提供の前提</td></tr>
+        <tr><td class="q">AWS Security-Specialty ＋ CISSP</td><td>人</td><td><span class="badge plus">加点・差別化</span></td><td>医療×クラウドの信頼の核</td></tr>
+        <tr><td class="q">AWS HCLS（ヘルスケア）Competency</td><td>パートナー</td><td><span class="badge plus">加点・差別化</span></td><td>医療で AWS 公認＋共同営業</td></tr>
+        <tr><td class="q">ASPIC 医療情報認定 / HISPRO 適合性評価</td><td>組織認証</td><td><span class="badge plus">加点・差別化</span></td><td>医療特化の訴求</td></tr>
+        <tr><td class="q">上級医療情報技師 / 高度区分IPA(PM・SA) / 登録セキスペ</td><td>人</td><td><span class="badge plus">加点・差別化</span></td><td>体制の厚み・調達加点</td></tr>
+        <tr><td class="q">ISO 27018 / Migration Competency / 同種実績</td><td>各種</td><td><span class="badge plus">加点・差別化</span></td><td>PII保護・移行価格競争力・実績要件</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 class="sec" style="margin-top:28px">押さえるべき 3 つの構造</h3>
+    <div class="note-box"><strong>1. 業許可は「機能トリガー」式：</strong> 通常の LIS（保管・伝送・表示のみ）は薬機法の業許可がすべて不要。診断支援 AI を載せれば SaMD（製造販売業許可）、検体検査を受託すれば衛生検査所登録が発生する。スコープを切れば、許可なしで提供できる。</div>
+    <div class="note-box"><strong>2. 個人認定が組織の格を決める：</strong> AWS パートナーティアも HCLS Competency も「所属エンジニアの Professional/Specialty 認定数」が要件。CISSP・医療情報技師も同じ構造。人を試験に通す投資が、組織の信頼・ティア・受注力に直結する。</div>
+    <div class="note-box"><strong>3. 公的と民間は別ルール：</strong> 公的病院は入札資格（全省庁統一/自治体名簿）が製品力以前の前提。民間病院は随意契約で資格不要、製品力・関係性・3省2GL 準拠が勝負どころ。どこを主戦場に置くかで取得すべき資格が変わる。</div>
+
+    <h3 class="sec" style="margin-top:28px">投資のロードマップ</h3>
+    <div class="rmap">
+      <div class="rmap-base has-tip" data-tip="base">
+        <span class="lbl">土台（先行投資・全フェーズと並走）</span>
+        <b>個人認定の育成</b> ── 医療情報技師 ＋ AWS（Cloud Practitioner→SAA→SAP / Security-Specialty）＋ CISSP ＋ 登録セキスペ ＋ 臨床検査技師
+        <span class="hint">個人の資格が、組織認証・AWS パートナーティア・HCLS Competency の土台になる。クリックで詳細。</span>
+      </div>
+      <div class="rmap-up">↑ 支える</div>
+      <div class="rmap-flow">
+        <div class="rmap-phase">
+          <div class="ph">PHASE 1</div><div class="pt">基盤固め</div>
+          <ul><li class="has-tip" data-tip="isms">ISMS ＋ ISO 27017</li><li class="has-tip" data-tip="pmark">プライバシーマーク</li><li class="has-tip" data-tip="apn">AWS APN → Select → Advanced</li></ul>
+          <span class="deg defacto">実質必須</span>
+        </div>
+        <div class="rmap-arrow">→</div>
+        <div class="rmap-phase">
+          <div class="ph">PHASE 2</div><div class="pt">入札参加資格を得る</div>
+          <ul><li class="has-tip" data-tip="zensho">全省庁統一資格</li><li class="has-tip" data-tip="jichitai">ターゲット自治体 名簿</li><li class="has-tip" data-tip="ismap">ISMAP（公的クラウド狙い）</li></ul>
+          <span class="deg gate">必須ゲート</span>
+        </div>
+        <div class="rmap-arrow">→</div>
+        <div class="rmap-phase">
+          <div class="ph">PHASE 3</div><div class="pt">医療で差別化</div>
+          <ul><li class="has-tip" data-tip="hcls">HCLS Competency（事例4件）</li><li class="has-tip" data-tip="migration">Migration Competency</li><li class="has-tip" data-tip="aspic">ASPIC / HISPRO</li></ul>
+          <span class="deg plus">加点・差別化</span>
+        </div>
+        <div class="rmap-arrow">→</div>
+        <div class="rmap-goal has-tip" data-tip="goal"><b>受注力</b><span>医療 × クラウドの両軸</span></div>
+      </div>
+    </div>
+    <details class="road-details"><summary>各ステップの詳細（7 ステップ）を開く</summary>
+    <div class="road">
+      <div class="s"><b>個人認定の育成</b> ── 全ての土台。医療情報技師 ＋ AWS（Cloud Practitioner→SAA→SAP/Security Specialty）＋ CISSP ＋ 情報処理安全確保支援士。臨床検査技師をドメインに据える。</div>
+      <div class="s"><b>組織認証 1st パッケージ</b> ── ISMS（JIS Q 27001:2023）＋ ISO 27017 ＋ プライバシーマーク。</div>
+      <div class="s"><b>AWS パートナー</b> ── APN 登録 → Select → Advanced（Advanced が HCLS Competency の前提）。</div>
+      <div class="s"><b>入札資格</b> ── 全省庁統一資格（物販＋役務）＋ ターゲット自治体の名簿登録。</div>
+      <div class="s"><b>公的クラウドを狙うなら ISMAP 登録</b> ── 国・独法のクラウド調達は原則 ISMAP リストから。監査コスト大、投資判断要。</div>
+      <div class="s"><b>実績を貯めて医療×移行の両軸</b> ── HCLS Competency（医療本番事例4件）＋ Migration Competency（MAP 資金で移行案件の価格競争力）。</div>
+      <div class="s"><b>医療訴求の仕上げ</b> ── ASPIC 医療情報認定 または HISPRO 適合性評価で、医療機関の調達担当に「3省2GL 適合」を分かりやすく示す。</div>
+    </div>
+    </details>
+  </section>
+
+  <!-- ===== 組織の認証 ===== -->
+  <section class="panel" id="org">
+    <details class="card" open>
+      <summary><div class="tw"><div class="tr"><span class="badge defacto">実質必須</span><span class="badge layer">組織認証</span><h4>ISMS（ISO/IEC 27001 ／ JIS Q 27001:2023）</h4></div><div class="meta">認証機関：ISMS-AC 認定の審査登録機関</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>情報セキュリティマネジメントシステムの認証。JIS Q 27001:2023（ISO/IEC 27001:2022 対応、2023-09-20 公示）、追補1=JIS Q 27001:2025（2025-05-20）。旧版からの移行期限は 2025-10-31。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>3省2GL 事業者向けGL が安全管理体制の中核として明記。医療機関の調達基準でほぼ必須化。これがないと選定テーブルに乗らない、全ての土台。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://isms.jp/topics/news/202500520.html">JIS Q 27001:2025 発行</a> ／ <a href="https://www.jsa.or.jp/ms-sp-1/isoiec27001shinsa/">JSA</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge defacto">実質必須</span><span class="badge layer">組織認証</span><h4>ISO/IEC 27017（クラウドセキュリティ）</h4></div><div class="meta">ISMS への上乗せ認証（ISMS-AC）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>クラウドサービスのための情報セキュリティ管理策実践規範（ISO/IEC 27017:2015）。CSP/CSC の役割分担を明確化。ISMS に上乗せして取得。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>LIS を SaaS 提供する以上、ISMS 単独では不足とみなされやすい。クラウド提供形態では実質必須化が進行。ISMS とセットで固めるのが現実解。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.meti.go.jp/policy/mono_info_service/healthcare/teikyoujigyousyagl.html">提供事業者GL（経産省）</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点</span><span class="badge layer">組織認証</span><h4>ISO/IEC 27018（クラウド上の PII 保護）</h4></div><div class="meta">ISMS への上乗せ（27018:2019）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>パブリッククラウドの個人情報（PII）保護実践規範。患者 PII を扱うクラウドの加点要素。27017 とセットで取得されることが多い。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>27017 取得時に同時上乗せが効率的。患者データを扱うクラウドであることの信頼性を補強。</p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge defacto">実質必須</span><span class="badge layer">組織認証</span><h4>プライバシーマーク（JIS Q 15001:2023）</h4></div><div class="meta">JIPDEC（指定機関）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>個人情報保護マネジメントシステムの認証。JIS Q 15001:2023、構築・運用指針 ver1.0 は 2024-10-01 申請分から適用。医療系は『保健医療福祉分野のプライバシーマーク認定指針』（MEDIS）の遵守が望ましい。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>提供事業者GL が「取得が望ましい」。要配慮個人情報を扱う事業者の信頼の土台。ISMS と並行取得可。入札では「Pマーク or ISMS のいずれか保有」で条件クリアとする公告が多い。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://privacymark.jp/news/2024/system/1001_1.html">Pマーク構築・運用指針2023</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge gate">公的調達で必須</span><span class="badge layer">組織認証</span><h4>ISMAP / ISMAP-LIU</h4></div><div class="meta">ISMAP 運営委員会（NISC/デジタル庁/総務省/経産省）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>政府情報システムのためのセキュリティ評価制度。国の機関・独法・指定法人のクラウド調達は原則 ISMAP クラウドサービスリスト登録が要件。ISMAP-LIU（低リスク SaaS 向け、2022-11 運用開始）。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>国立病院機構・大学病院等の公的調達を狙う段階で必須。民間医療機関中心なら後回し可。<strong>注意：LIS は要配慮個人情報を扱うため「低リスク用途」に該当しにくく、ISMAP-LIU ではなく本体側が筋。</strong>登録は監査コスト・期間が大きく投資判断が要る。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.ismap.go.jp/csm?id=cloud_service_list">ISMAP クラウドサービスリスト</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点（医療訴求）</span><span class="badge layer">組織認証</span><h4>ASPIC 医療情報 ASP・SaaS 情報開示認定</h4></div><div class="meta">ASPIC（総務省指定の情報開示認定機関）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>クラウドサービスの安全・信頼性に係る情報開示認定制度（医療情報 ASP・SaaS）。総務省『医療情報を取り扱う ASP・SaaS 安全・信頼性ガイドライン』が根拠（2017-10 運用開始）。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>医療情報を扱うクラウドの安全性を開示・認定。医療機関の調達担当への提案で訴求力が高い。提案差別化として中盤以降に。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://aspicjapan.org/nintei/iryo-nintei/">ASPIC 医療情報認定</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点</span><span class="badge layer">組織認証</span><h4>HISPRO 適合性評価 ／ JASA CS ゴールドマーク</h4></div><div class="meta">HISPRO ／ JASA・JCISPA</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>HISPRO 適合性評価：製品/サービス単位で 3省2GL 適合を第三者点検。JASA CS ゴールドマーク：ISO/IEC 27017 ベースの外部監査人による第三者評価（27017 認証の代替/補完）。</p></div>
+        <div class="row"><div class="h">案件での効き方</div><p>医療機関の選定材料として実務で参照される。27017 認証を取らない/補完する選択肢として、または 3省2GL 適合の分かりやすい証明として。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://hispro.or.jp/">HISPRO</a> ／ <a href="https://jasa.jp/jcispa/cloud_security/cs_mark/type_cs_mark/">JASA CS マーク</a></p></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== 人の資格 ===== -->
+  <section class="panel" id="people">
+    <h3 class="sec">医療・セキュリティ系</h3>
+    <details class="card" open>
+      <summary><div class="tw"><div class="tr"><span class="badge defacto">実質必須</span><span class="badge layer">人</span><h4>医療情報技師 ／ 上級医療情報技師</h4></div><div class="meta">日本医療情報学会 医療情報技師育成部会</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>事実上の標準。病院機能評価で「配置が望ましい」、実際の調達仕様書（国循 NCVC 等）で受託者の望ましい資格に明記。提案・要件定義の顔になり、信頼性のベース。上級（医療情報技師＋実務5年で受検）は DX 推進統括人材としてさらに加点。最優先で確保。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.hcit.or.jp/">医療情報技師</a> ／ <a href="https://www.hcit.or.jp/advanced/">上級</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点・実務</span><span class="badge layer">人</span><h4>情報処理安全確保支援士（登録セキスペ）</h4></div><div class="meta">国家資格／IPA・経産省（3年更新・講習義務）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>3省2GL のセキュリティ体制説明・安全管理責任者の裏付け。クラウド案件の責任分界の説明者として特に重い。政府調達でセキュリティ人材要件として評価されやすい。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.ipa.go.jp/jinzai/riss/index.html">IPA 登録セキスペ</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点（調達明示）</span><span class="badge layer">人</span><h4>高度区分 情報処理技術者試験（ITストラテジスト/システムアーキテクト/PM 等）</h4></div><div class="meta">国家試験／IPA</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>調達仕様書（NCVC 等）で「情報システム：高度区分」を望ましい資格に明記。プロジェクトマネージャは体制責任者の定番証明。構築チームの体制要件として効く。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.ipa.go.jp/shiken/kubun/list.html">IPA 試験区分</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge defacto">ドメイン必須級</span><span class="badge layer">人</span><h4>臨床検査技師 ／ 衛生検査所 精度管理責任者 ／ 細胞検査士</h4></div><div class="meta">国家資格（臨検法）ほか</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>臨床検査技師は LIS＝検体検査の業務理解の中心。社内に1名いるだけで要件定義の精度が大きく上がる。改正医療法（2018/12）で精度確保責任者になりうる。検査受託・衛生検査所運用に踏み込むなら精度管理責任者（検体検査6年＋精度管理3年）。病理・細胞診を扱うなら細胞検査士の知見をアクセス可能に。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://laws.e-gov.go.jp/law/333AC1000000076">臨検法 e-Gov</a> ／ <a href="https://jscc.or.jp/cytotechnologist/certification-for-cytotechnologist/">細胞検査士</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点（ニッチ）</span><span class="badge layer">人</span><h4>診療情報管理士 ／ 医療情報システム監査人</h4></div><div class="meta">日本病院会ほか ／ MEDIS-DC</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>診療情報管理士：コード・国際統計分類・院内情報運用の理解。病院情報連携時に効く。医療情報システム監査人（MEDIS-DC）：安全管理・運用適正の監査証明で 3省2GL 準拠の第三者性アピール。規模拡大・大病院/連携案件で追加する加点枠。</p></div>
+      </div>
+    </details>
+
+    <div class="note-box"><strong>顧客側の論点（ベンダーが導入支援で必ず関わる）：</strong> 医療情報システム安全管理責任者は、診療録管理体制加算1 の施設基準で<strong>医療機関側に配置義務</strong>（2022 改定では許可病床400床以上、2024 改定で200床以上へ対象拡大。専任＋年1回以上の研修）。法令上この責任者に資格要件はないが、（上級）医療情報技師・登録セキスペが推奨マッピング（実態は無資格が約8割）。提案で「うちの人材が支援できる」と打ち出せる。</div>
+
+    <h3 class="sec" style="margin-top:28px">クラウド・開発技術系</h3>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">医療×クラウドの核</span><span class="badge layer">人</span><h4>AWS Certified Security – Specialty ＋ CISSP</h4></div><div class="meta">AWS ／ ISC2（実務5年）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>この 2 枚が医療機微情報案件の信頼と提案加点の中心。AWS Security-Specialty（SCS-C02、6ドメイン）は暗号化・データ保護・ログ監視・ガバナンスの技術実装を、CISSP は組織のセキュリティ統括を証明し、補完関係にある。大型・公共入札での加点効果が大きい。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://aws.amazon.com/certification/certified-security-specialty/">AWS Security-Specialty</a> ／ <a href="https://www.isc2.org/certifications/cissp/">CISSP</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">設計・構築・運用</span><span class="badge layer">人</span><h4>AWS 認定（SAA / SAP / DevOps Pro / Advanced Networking）＋ Terraform</h4></div><div class="meta">AWS ／ HashiCorp</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>Solutions Architect Associate＝構築の中核、Professional（SAP-C02）＝設計力の最上位証明と入札加点。DevOps Engineer Professional＝運用自動化・監視。Advanced Networking-Specialty＝院内⇔クラウドの閉域接続設計。Terraform Associate＝IaC 標準（2026-01 から 004）。これらの保有数が AWS パートナーティアの要件を満たす。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://aws.amazon.com/certification/">AWS 認定</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">案件特性で追加</span><span class="badge layer">人</span><h4>Kubernetes（CKA/CKS）／ Azure・GCP ／ CISA・CISM・Security+</h4></div><div class="meta">CNCF ／ Microsoft・Google ／ ISACA・CompTIA</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">案件での効き方</div><p>コンテナ基盤採用なら CKA→CKS（K8s セキュリティ）。マルチクラウド提案なら Azure（AZ-305/AZ-500）or GCP（PCA/Security Engineer）の1系統。監査・第三者統制が契約要件なら CISA。CISM はセキュリティ管理の戦略側（CISO/責任者）。Security+ は全員のセキュリティ基礎兼 CISSP 実務要件の waiver。</p></div>
+      </div>
+    </details>
+
+    <div class="minicore">
+      <div class="h">チームに最低限そろえたい構成（兼任前提・小規模ベンダー想定）</div>
+      <ul>
+        <li>上級医療情報技師 ＋ 情報処理安全確保支援士（兼任可）×1 ── 提案の顔＋3省2GL 説明者</li>
+        <li>高度区分 IPA（PM or システムアーキテクト）×1 ── 構築の体制責任者証明</li>
+        <li>臨床検査技師 ×1 ── LIS ドメインの核（要件定義の精度）</li>
+        <li>AWS Security-Specialty ＋ CISSP（できれば責任者層）×1 ── 医療×クラウドの信頼</li>
+        <li>AWS SA Associate ×複数 →うち1名 SA Professional ＋ Terraform、全員 Cloud Practitioner/Security+</li>
+      </ul>
+    </div>
+
+    <div class="note-box warn"><strong>提案資料に古い情報を載せない：</strong> AWS Database-Specialty は 2024-04 廃止、Terraform Associate は 2026-01 に 003→004 切替、AZ-500 は Associate（Specialty ではない）。資格の有効期間は AWS 系3年／K8s・GCP系2年（保有維持コストに直結）。</div>
+  </section>
+
+  <!-- ===== 事業形態の許可 ===== -->
+  <section class="panel" id="biz">
+    <div class="note-box"><strong>結論：</strong> 通常の LIS（検査結果の管理・保管・伝送・表示のみ）は薬機法上の医療機器に非該当 → 製造販売業・製造業・販売業の許可はすべて原則不要。業許可は「機能を載せた瞬間」に発生する。</div>
+    <h3 class="sec">機能 → 必要な許可（条件分岐）</h3>
+    <div class="flow">
+      <div class="step a"><div class="t">[A] 保管・伝送・表示のみ ＝ 通常の LIS</div>検査結果の入力・管理・保管・伝送・表示、オーダー連携、レポート出力。データの加工・処理を伴わない。<div class="arw">→ 医療機器に非該当。薬機法の業許可はすべて不要。</div></div>
+      <div class="step b"><div class="t">[B] 診断/治療に用いる加工・判定を載せる ＝ SaMD</div>病理 AI 画像診断支援、検査値からの疾病候補・リスク表示、治療計画決定支援など。<div class="arw">→ プログラム医療機器(SaMD)に該当。自社出荷なら 製造販売業許可（クラス別）＋ 製造業登録 ＋ QMS 適合 ＋ 製品ごと承認/認証/届出。他社 SaMD の再販/貸与なら 販売業・貸与業の許可（高度管理）/届出（管理）。</div></div>
+      <div class="step c"><div class="t">[C] 検体検査を業として受託 ＝ 検査機関側になる</div>検体を預かり微生物・病理・生化学等の検査を実施して結果を返す。遠隔病理診断で自社が検査機関側。<div class="arw">→ 衛生検査所の登録（臨技法20条の3）。薬機法ではなく臨技法の問題。[B] と併存しうる。</div></div>
+    </div>
+    <div class="note-box warn"><strong>該非判定の注意：</strong> 単なる基準値の色付け表示はグレーだが、「疾病候補・リスクを診断的に表示」まで踏み込むと SaMD に該当しうる。<strong>該非はマーケ表現・広告の打ち出し方も判断材料</strong>になる。病理 AI は原則クラスⅡ以上。単に LIS/ASP を医療機関に提供するだけなら検査を業として行っていないため衛生検査所は非該当。実務は PMDA/都道府県の「該非確認」相談が確実（仕様書と訴求文言の両方を持参）。</div>
+    <h3 class="sec" style="margin-top:24px">許可・登録一覧</h3>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge cond">条件付き必須</span><span class="badge layer">事業形態</span><h4>医療機器製造販売業許可（第一/二/三種）＋製造業登録＋QMS＋製品承認</h4></div><div class="meta">所管：都道府県薬務課 ／ PMDA・厚労省</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">必要条件と概要</div><p>SaMD を自社名で市場に出す場合。クラスⅢ・Ⅳ=第一種、Ⅱ=第二種、Ⅰ=第三種（上位は下位をみなす）。総括製造販売責任者・三役体制が必須。製品ごとに承認(クラスⅢⅣ)/認証(基準ありのⅡ)/届出(Ⅰ)。QMS 省令（平16厚労令169号、令3改正で ISO13485 整合、ソフトウェアバリデーション義務）への適合が承認要件。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.pmda.go.jp/files/000240233.pdf">SaMD 該当性ガイドライン</a> ／ <a href="https://laws.e-gov.go.jp/law/416M60000100169">QMS省令</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge cond">条件付き必須</span><span class="badge layer">事業形態</span><h4>高度管理医療機器等 販売業・貸与業 許可／届出</h4></div><div class="meta">所管：都道府県/保健所設置市/特別区</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">必要条件</div><p>他社製を含む高度管理医療機器を業として販売・貸与する場合は「許可」（営業所管理者の設置必須）、管理医療機器なら「届出」。自社開発でなくても、SaMD を再販・サブスク提供するなら対象。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.hokeniryo.metro.tokyo.lg.jp/anzen/iyaku/sonota/sale_leas/kyoka">東京都保健医療局</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge cond">条件付き必須</span><span class="badge layer">事業形態</span><h4>衛生検査所の登録</h4></div><div class="meta">所管：都道府県知事/保健所設置市長/特別区長</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">必要条件</div><p>検体検査を業として受託する場合（病院・診療所等を除く場所で実施）。臨技法20条の3。管理者（医師 or 相当経験の臨床検査技師）＋指導監督医、構造設備・精度管理基準。LIS ソフト提供だけなら非該当。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.mhlw.go.jp/content/10800000/000911181.pdf">衛生検査所指導要領</a></p></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== 入札・調達 ===== -->
+  <section class="panel" id="bid">
+    <h3 class="sec">公的病院（一般競争入札） vs 民間病院（随意契約）</h3>
+    <div style="overflow-x:auto">
+    <table class="cmp">
+      <thead><tr><th style="width:18%">観点</th><th style="width:41%">公的病院（国立病院機構・自治体・地独・大学）</th><th style="width:41%">民間病院</th></tr></thead>
+      <tbody>
+        <tr><td>選定方式</td><td>原則 一般競争入札。基準額超は総合評価方式／公募型プロポーザル（技術点＋価格点）</td><td>随意契約。価格・機能・関係性で自由に選定</td></tr>
+        <tr><td>入札参加資格</td><td><strong>全省庁統一資格（国・独法）または自治体名簿登録が必須</strong>。等級・営業品目の指定あり</td><td>不要</td></tr>
+        <tr><td>認証</td><td>Pマーク/ISMS が条件 or 加点。クラウドは ISMAP（国・独法は原則必須）</td><td>必須ではない。3省2GL 準拠は実務上ほぼ必須</td></tr>
+        <tr><td>実績・体制・財務</td><td>同種実績・保守体制証明・経営状況審査が課される</td><td>病院側の任意判断</td></tr>
+        <tr><td>営業上の含意</td><td>資格を<strong>事前に</strong>整えないと入札に参加すらできない</td><td>製品力・サポート・価格交渉が勝負</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3 class="sec" style="margin-top:24px">入札・調達資格</h3>
+    <details class="card" open>
+      <summary><div class="tw"><div class="tr"><span class="badge gate">必須ゲート</span><span class="badge layer">入札</span><h4>全省庁統一資格（物品の販売／役務の提供等）</h4></div><div class="meta">国の機関・独法（国立病院機構等）</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要と取得</div><p>国の機関・独法の調達で必須。営業品目は物品の製造/販売/役務の提供等/買受の4区分（LIS は「物品の販売」「役務の提供等」）。調達ポータルからオンライン申請、有効期間 最大3年（現行 令和7・8・9年度）。等級 A〜D は財務等で自動格付け。国立病院機構の病院情報システム実例では A・B・C が対象（D は対象外）。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://www.p-portal.go.jp/pps-web-biz/geps-chotatujoho/resources/app/html/shikaku.html">調達ポータル</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge gate">必須ゲート</span><span class="badge layer">入札</span><h4>地方公共団体 競争入札参加資格者名簿（物品・役務）</h4></div><div class="meta">各自治体／共同受付システム</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要と取得</div><p>都道府県・市町村立病院の競争入札。全省庁統一資格とは別物で、自治体ごとに登録が必要。有効期間は自治体により異なる（神奈川2年・千葉/岡山 最大36か月 等）。営業品目の指定と定期申請の始期を逆算してスケジュール管理。地独・大学病院は設立団体名簿の準用 or 独自名簿で、法人ごとに要確認。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://nyusatsu.e-kanagawa.lg.jp/html/uketsuke.html">かながわ電子入札共同システム</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">加点</span><span class="badge layer">入札</span><h4>同種実績・保守体制・財務要件・3省2GL 準拠表明</h4></div><div class="meta">公的病院の競争入札・プロポーザル</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">概要</div><p>「本業務と同種業務実績1件以上」型が典型。保守・アフターサービス体制の証明、経営状況（自己資本・流動比率）審査。3省2GL 準拠表明は仕様書でほぼ必ず要求される。総合評価・プロポーザルでは認証・実績・有資格者で加点。</p></div>
+      </div>
+    </details>
+    <div class="minicore">
+      <div class="h">事前準備リスト（優先順）</div>
+      <ul>
+        <li>全省庁統一資格を「物品の販売」＋「役務の提供等」で申請（等級 A〜C 狙い）</li>
+        <li>主要ターゲット自治体の入札参加資格者名簿に登録</li>
+        <li>Pマーク または ISMS（＋27017）を取得</li>
+        <li>3省2GL（事業者向け第2.0版）準拠を体制・文書として整備、準拠表明できる状態に</li>
+        <li>クラウド提供で国・独法を狙うなら ISMAP 登録を検討（監査コスト大、投資判断）</li>
+        <li>同種実績の証明書類化、保守・アフターサービス体制の文書化</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== AWSパートナー ===== -->
+  <section class="panel" id="partner">
+    <div class="note-box"><strong>構造の要点：</strong> パートナーティアは組織の格付けだが、中核要件は「所属する個人の AWS 認定資格の数と質」。個人が試験に受かるほど組織のティアが上がる。受注力強化は「人を試験に通す投資」から始まる（launched 案件数・MRR も並行して必要）。</div>
+    <h3 class="sec">個人認定 → 組織ティアの積み上げ</h3>
+    <div class="stack">
+      <div class="lvl"><b>個人の AWS 認定</b>：Foundational（Cloud Practitioner）／ Associate（SAA）／ Professional・Specialty（SAP・DevOps・Security）</div>
+      <div class="lvl"><b>Select</b>：技術認定 2 名 ／ launched 3 件・MRR ≥ $1,500</div>
+      <div class="lvl"><b>Advanced</b>：技術認定 6 名（うち Pro/Specialty 3 名以上）／ launched 20 件・MRR ≥ $10,000 ── <b>HCLS Competency の前提</b></div>
+      <div class="lvl"><b>Premier</b>：技術認定 25 名（うち Pro/Specialty 10 名以上）／ launched 50 件・MRR ≥ $50,000・コンピテンシー3件</div>
+    </div>
+    <div class="updown">↑ 個人の Professional/Specialty 認定数が、組織のティアを押し上げる</div>
+
+    <h3 class="sec" style="margin-top:24px">狙うべきプログラム</h3>
+    <details class="card" open>
+      <summary><div class="tw"><div class="tr"><span class="badge plus">医療の主要差別化</span><span class="badge layer">パートナー</span><h4>AWS Healthcare and Life Sciences（HCLS）Competency</h4></div><div class="meta">Advanced/Premier ティアが前提</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">要件と効き方</div><p>AWS Professional 認定を企業規模別に保有＋ヘルスケア固有の本番稼働事例4件（うち2件は公開参照可能）＋技術検証・監査。取得すれば医療業界での専門性を AWS が公式認定し、Solutions Finder 上位表示・共同営業スコア向上・AWS 営業への直接アクセス。医療機関提案で大きな差別化になる。事例4件のリードタイムが長いので、ティア到達と実績作りを進めながら最終目標として狙う。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://aws.amazon.com/partners/featured/healthcare/">HCLS Competency</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">移行案件の価格競争力</span><span class="badge layer">パートナー</span><h4>AWS Migration Competency ＋ MAP（Migration Acceleration Program）</h4></div><div class="meta">AWS</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">要件と効き方</div><p>大規模移行の実績・体制・技術力の検証。Competency 取得 or Validated Stage で MAP 資金が使え、顧客の初期移行コストを相殺できる。LIS の「既存システム→クラウド移行」が主戦場なら優先度が高く、提案の価格競争力＝直接受注力に効く。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://aws.amazon.com/migration-acceleration-program/">MAP</a></p></div>
+      </div>
+    </details>
+    <details class="card">
+      <summary><div class="tw"><div class="tr"><span class="badge plus">前提ゲート</span><span class="badge layer">パートナー</span><h4>Foundational Technical Review（FTR）／ Well-Architected ／ 共同営業</h4></div><div class="meta">AWS</div></div><span class="chev">▼</span></summary>
+      <div class="body">
+        <div class="row"><div class="h">要件と効き方</div><p>FTR：Well-Architected ベストプラクティスでリスク検証（無料・有効3年）。「Reviewed by AWS」バッジ取得、Competency / ISV Accelerate / Marketplace の前提。自社ソフト型 LIS なら必須ゲート。共同営業（Services 系=Specializations、Software 系=ISV Accelerate）で AWS Seller との co-sell＝AWS 営業が顧客に自社を推す構造を作る。</p></div>
+        <div class="row"><div class="h">出典</div><p><a href="https://aws.amazon.com/partners/foundational-technical-review/">FTR</a> ／ <a href="https://aws.amazon.com/partners/co-sell-with-aws/">Co-sell</a></p></div>
+      </div>
+    </details>
+    <div class="note-box"><strong>狙う順序：</strong> ① APN 登録＋Path 選択 → ② 個人認定を計画取得（CP→SAA→SAP/Security Specialty）で Select→Advanced → ③ FTR/Well-Architected → ④ Migration Competency（移行主戦場なら）→ ⑤ HCLS Competency（医療事例を貯めて最終目標）→ ⑥ 共同営業参加。マルチクラウド（Azure/GCP）も「個人認定→組織ティア」の構造は同じで、AWS 認定育成の考え方を横展開できる。</div>
+  </section>
+
+  <footer>
+    <div class="sources">
+      <h2>出典（公的・公式情報）</h2>
+      <h3>組織認証</h3>
+      <ul>
+        <li>提供事業者ガイドライン第2.0版（経産省・総務省、令和2年8月／令和7年3月改定） <a href="https://www.meti.go.jp/policy/mono_info_service/healthcare/teikyoujigyousyagl.html">teikyoujigyousyagl</a></li>
+        <li>JIS Q 27001:2025 <a href="https://isms.jp/topics/news/202500520.html">isms.jp</a> ／ Pマーク指針2023 <a href="https://privacymark.jp/news/2024/system/1001_1.html">privacymark.jp</a></li>
+        <li>ISMAP <a href="https://www.ismap.go.jp/csm">ismap.go.jp</a> ／ ASPIC医療情報認定 <a href="https://aspicjapan.org/nintei/iryo-nintei/">aspicjapan</a> ／ HISPRO <a href="https://hispro.or.jp/">hispro.or.jp</a></li>
+      </ul>
+      <h3>業許可・人的資格</h3>
+      <ul>
+        <li>SaMD該当性ガイドライン（PMDA） <a href="https://www.pmda.go.jp/files/000240233.pdf">pmda.go.jp</a> ／ QMS省令 <a href="https://laws.e-gov.go.jp/law/416M60000100169">e-Gov</a></li>
+        <li>衛生検査所指導要領 <a href="https://www.mhlw.go.jp/content/10800000/000911181.pdf">mhlw</a> ／ 臨検法 <a href="https://laws.e-gov.go.jp/law/333AC1000000076">e-Gov</a></li>
+        <li>医療情報技師 <a href="https://www.hcit.or.jp/">hcit.or.jp</a> ／ 登録セキスペ <a href="https://www.ipa.go.jp/jinzai/riss/index.html">IPA</a></li>
+      </ul>
+      <h3>入札・クラウドパートナー</h3>
+      <ul>
+        <li>調達ポータル（全省庁統一資格） <a href="https://www.p-portal.go.jp/pps-web-biz/geps-chotatujoho/resources/app/html/shikaku.html">p-portal</a></li>
+        <li>AWS パートナーティア <a href="https://aws.amazon.com/partners/services-tiers/">services-tiers</a> ／ HCLS <a href="https://aws.amazon.com/partners/featured/healthcare/">healthcare</a> ／ FTR <a href="https://aws.amazon.com/partners/foundational-technical-review/">FTR</a></li>
+      </ul>
+      <p class="disclaimer">本資料は 2026 年 5 月時点で公開されている公的・公式情報に基づく一般整理であり、特定の組織・案件における適合性や十分性を保証しない。制度・版番・ティア要件は改定される。資格・認証の取得計画、入札参加、SaMD 該非判断にあたっては、必ず各公式（IPA・JIPDEC・ISMS-AC・PMDA・都道府県・調達ポータル・AWS 等）と当該調達仕様書で最新を確認し、必要に応じて専門家の助言を得ること。一部のティア要件数値・加点配点は二次情報を含み、AWS Partner Central や個別公告での最終確認を推奨する。</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var target = tab.getAttribute('data-panel');
+      document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById(target).classList.add('active');
+      var tabsEl = document.querySelector('.tabs');
+      var tabsTop = tabsEl.getBoundingClientRect().top + window.scrollY - 12;
+      if (window.scrollY > tabsTop) window.scrollTo({ top: tabsTop, behavior: 'smooth' });
+    });
+  });
+
+  // ロードマップ図解の項目をクリックで具体説明を吹き出し表示
+  var roadDesc = {
+    base:{t:"個人認定の育成（土台）",b:"医療情報技師・AWS認定・CISSP等の個人資格。個人が試験に受かるほど組織のパートナーティアやコンピテンシーが上がる構造で、全投資の起点。launched案件・実績作りと並走させる。"},
+    isms:{t:"ISMS ＋ ISO 27017",b:"情報セキュリティの認証(JIS Q 27001:2023)と、クラウド向けの上乗せ管理策(27017)。LISをSaaS提供する以上ISMS単独では不足とみなされやすく、セットで実質必須。"},
+    pmark:{t:"プライバシーマーク",b:"個人情報保護マネジメントの認証(JIS Q 15001:2023)。要配慮個人情報を扱う事業者の信頼の土台。入札では「Pマーク or ISMSのいずれか保有」を条件にする公告が多い。"},
+    apn:{t:"AWS APN → Select → Advanced",b:"AWSパートナー登録からティアを上げる。Select=技術認定2名、Advanced=6名(うちPro/Specialty3名)。Advancedが医療のHCLS Competencyの前提になる分水嶺。"},
+    zensho:{t:"全省庁統一資格",b:"国の機関・独法(国立病院機構等)の入札に出る共通パスポート。物品の販売/役務で申請、調達ポータルからオンライン、最大3年・等級A〜D。これがないと国の案件は入札参加すらできない。"},
+    jichitai:{t:"ターゲット自治体 名簿",b:"県立・市立病院の入札に出るための、自治体ごとの競争入札参加資格者名簿への登録。全国は膨大なので、狙う公立病院がある自治体を絞って登録する。有効期間は自治体次第(神奈川2年、千葉/岡山36か月等)。"},
+    ismap:{t:"ISMAP（公的クラウド狙い）",b:"政府が認めたクラウドの事前登録リスト。国・独法のクラウド調達は原則このリストから選ぶルール。クラウドで公的を狙うなら自社サービスのISMAP登録が必須で、第三者監査が要る(コスト大)。民間相手なら不要。"},
+    hcls:{t:"HCLS（ヘルスケア）Competency",b:"AWSのヘルスケア専門認定。Advancedティア＋医療の本番稼働事例4件(うち2件公開)が要件。取得すれば医療提案で大きな差別化になり、AWS共同営業にもつながる。事例4件のリードタイムが長く最終目標。"},
+    migration:{t:"Migration Competency",b:"大規模移行の実績認定。MAP(Migration Acceleration Program)資金で顧客の移行コストを相殺でき、既存LIS→クラウド移行案件の価格競争力、ひいては受注力に直結する。"},
+    aspic:{t:"ASPIC / HISPRO",b:"医療特化の第三者認定・点検。ASPICは医療情報ASP・SaaS情報開示認定、HISPROは3省2GL適合の第三者点検。医療機関の調達担当に「適合」を分かりやすく示す訴求材料。"},
+    goal:{t:"受注力",b:"医療ドメイン(HCLS Competency)とクラウド技術(Security-Specialty/CISSP)の両軸で、医療機関に選ばれる事業者になる。"}
+  };
+  var tip = document.createElement('div'); tip.id = 'tip'; document.body.appendChild(tip);
+  function hideTip(){ tip.classList.remove('show'); tip.dataset.k = ''; }
+  function showTip(el, title, body){
+    tip.innerHTML = '';
+    var t = document.createElement('span'); t.className = 'tip-title'; t.textContent = title; tip.appendChild(t);
+    var b = document.createElement('span'); b.textContent = body; tip.appendChild(b);
+    tip.classList.remove('below'); tip.classList.add('show');
+    var r = el.getBoundingClientRect();
+    var tw = tip.offsetWidth, th = tip.offsetHeight;
+    var top = r.bottom + window.scrollY + 9;
+    var left = r.left + window.scrollX;
+    if (left + tw > window.innerWidth - 12) left = window.innerWidth - tw - 12;
+    if (left < 12) left = 12;
+    if (r.bottom + th + 18 > window.innerHeight) { top = r.top + window.scrollY - th - 9; tip.classList.add('below'); }
+    tip.style.top = top + 'px'; tip.style.left = left + 'px';
+  }
+  document.querySelectorAll('.rmap [data-tip]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      var k = el.getAttribute('data-tip'); var d = roadDesc[k]; if (!d) return;
+      if (tip.classList.contains('show') && tip.dataset.k === k) { hideTip(); return; }
+      tip.dataset.k = k; showTip(el, d.t, d.b);
+    });
+  });
+  document.addEventListener('click', hideTip);
+  window.addEventListener('resize', hideTip);
+  window.addEventListener('scroll', hideTip);
+</script>
+
+</body>
+</html>
